@@ -5,13 +5,13 @@ pygame.init()
 
 # init the game
 def mine(n, bombs):
-    table = make_table(n)
+    table = makeTable(n)
     table = add_bombs(table, bombs)
     table = change_table(table)
     return table
 
 # make a table matrix
-def make_table(n):
+def makeTable(n):
     return [[0] * n for i in range(n)]
 
 # add bombs to the matrix
@@ -125,9 +125,9 @@ def open_game(lst, square):
     i = square.x // 40
     j = square.y // 40
     if i + 1 < len(lst):
-        # we check one cube arround the current cube if it is in the table
+        # we check one cube around the current cube if it is in the table
         # if it is and it is not visible and unflagged, open it and than, if it is
-        # zero open everything arround it again and again
+        # zero open everything around it again and again
         if lst[i + 1][j].visible == False and lst[i + 1][j].flag == False:
             lst[i + 1][j].visible = True
             if lst[i + 1][j].val == 0:
@@ -169,7 +169,7 @@ def open_game(lst, square):
                 open_game(lst, lst[i][j + 1])
 
 
-def game(size, bombs):
+def game(size, bombs, position):
     clicked = pygame.image.load("tile_clicked.png")
     unclicked = pygame.image.load("tile_plain.png")
 
@@ -216,7 +216,7 @@ def game(size, bombs):
                 # if the user press on the left click
                 for i in lst:
                     for j in i:
-                        r = pygame.rect.Rect(pygame.mouse.get_pos(), (1, 1))
+                        r = pygame.rect.Rect(position, (1, 1))
                         if j.rect.colliderect(r):
                             if j.flag == False:
                                 if j.val == 9: #there is bomb
@@ -231,7 +231,7 @@ def game(size, bombs):
                 #if the user pressed on the right click we flagged or deflagged
                 for i in lst:
                     for j in i:
-                        r = pygame.rect.Rect(pygame.mouse.get_pos(), (1, 1))
+                        r = pygame.rect.Rect(position, (1, 1))
                         if j.rect.colliderect(r):
                             if j.visible == False:
                                 if j.flag == False:
