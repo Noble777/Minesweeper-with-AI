@@ -1,5 +1,6 @@
 from random import randint
 import pygame
+import time
 pygame.init()
 
 
@@ -27,7 +28,7 @@ def add_bombs(table, bombs):
                 is_bomb = True
     return table
 
-# change the numbers arround the bombs
+# change the numbers around the bombs
 def change_table(table):
     for x in range(len(table)):
         for y in range(len(table[x])):
@@ -168,8 +169,8 @@ def open_game(lst, square):
             if lst[i][j + 1].val == 0:
                 open_game(lst, lst[i][j + 1])
 
-
-def game(size, bombs, position):
+#position from dfs
+def game(size, bombs,position):
     clicked = pygame.image.load("tile_clicked.png")
     unclicked = pygame.image.load("tile_plain.png")
 
@@ -199,45 +200,23 @@ def game(size, bombs, position):
             lst[i//40] += [Square(i, j, 40, 40, MyBoard.board, (i // 40, j // 40))]
             screen.blit(unclicked, (i, j))
 
-    run = True
-    while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:# if quit the game, close the program
-                run = False
-                pygame.quit()
-
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
-                    run = False
-                    restart(size, bombs) # if the user press 'r' to restart
 
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                # if the user press on the left click
-                for i in lst:
-                    for j in i:
-                        r = pygame.rect.Rect(position, (1, 1))
-                        if j.rect.colliderect(r):
-                            if j.flag == False:
-                                if j.val == 9: #there is bomb
-                                    print("game over")
-                                    run = False
-                                j.visible = True
-                                if j.val == 0:
-                                    j.visible = open_game(lst, j)
-                                    j.visible = True
+    for newPosition in position:
+         # use position to uncover block
+        for i in lst:
+            for j in i:
+                r = pygame.rect.Rect(newPosition, (1, 1))
+                if j.rect.colliderect(r):
+                    if j.flag == False:
+                        if j.val == 9: #there is bomb
+                            print("game over")
+                        j.visible = True
+                        if j.val == 0:
+                            j.visible = open_game(lst, j)
+                            j.visible = True
+            time.sleep(3)
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                #if the user pressed on the right click we flagged or deflagged
-                for i in lst:
-                    for j in i:
-                        r = pygame.rect.Rect(position, (1, 1))
-                        if j.rect.colliderect(r):
-                            if j.visible == False:
-                                if j.flag == False:
-                                    j.flag = True
-                                elif j.flag == True:
-                                    j.flag = False
 
         # open every square that visible and check win
         for i in lst:
