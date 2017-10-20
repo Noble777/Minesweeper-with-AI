@@ -4,6 +4,19 @@ import time
 pygame.init()
 
 
+
+def dfs(x, y, visited, list, size):
+    list.append((x, y))
+    visited[x][y] = 1
+    if (x < size - 1 & visited[x + 1][y] == 0):
+        dfs(x + 1, y)
+    if (y < size - 1 & visited[x][y + 1] == 0):
+        dfs(x, y + 1)
+    if (x > 0 & visited[x - 1][y] == 0):
+        dfs(x - 1, y)
+    if (y > 0 & visited[x][y - 1] == 0):
+        dfs(x, y - 1)
+
 # init the game
 def mine(n, bombs):
     table = makeTable(n)
@@ -36,7 +49,7 @@ def change_table(table):
                 table = check_down_left(table, x, y)
                 table = check_down_right(table, x, y)
                 table = check_down(table, x, y)
-                table = check_up_left(table, x ,y)
+                table = check_up_left(table, x, y)
                 table = check_up_right(table, x, y)
                 table = check_up(table, x, y)
                 table = check_left(table, x, y)
@@ -159,7 +172,7 @@ def open_game(lst, square):
                 if lst[i - 1][j - 1].val == 0:
                     open_game(lst, lst[i - 1][j - 1])
     if j - 1 >= 0:
-        if lst[i][j - 1].visible == False and lst[i][j -1].flag == False:
+        if lst[i][j - 1].visible == False and lst[i][j - 1].flag == False:
             lst[i][j - 1].visible = True
             if lst[i][j - 1].val == 0:
                 open_game(lst, lst[i][j - 1])
@@ -203,6 +216,8 @@ def game(size, bombs,position):
 
 
     for newPosition in position:
+        # pause 1 s
+        time.sleep(1)
          # use position to uncover block
         for i in lst:
             for j in i:
@@ -215,7 +230,7 @@ def game(size, bombs,position):
                         if j.val == 0:
                             j.visible = open_game(lst, j)
                             j.visible = True
-            time.sleep(3)
+
 
 
         # open every square that visible and check win
