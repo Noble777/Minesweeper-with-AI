@@ -8,14 +8,15 @@ pygame.init()
 def dfs(x, y, visited, list, size):
     list.append((x, y))
     visited[x][y] = 1
-    if (x < size - 1 & visited[x + 1][y] == 0):
-        dfs(x + 1, y)
-    if (y < size - 1 & visited[x][y + 1] == 0):
-        dfs(x, y + 1)
-    if (x > 0 & visited[x - 1][y] == 0):
-        dfs(x - 1, y)
-    if (y > 0 & visited[x][y - 1] == 0):
-        dfs(x, y - 1)
+    if(x < size - 1 and visited[x + 1][y] == 0):
+        dfs(x + 1, y, visited, list, size)
+    if(y < size - 1 and visited[x][y + 1] == 0):
+
+        dfs(x, y + 1, visited, list, size)
+    if (x > 0 and visited[x - 1][y] == 0):
+        dfs(x - 1, y, visited, list, size)
+    if (y > 0 and visited[x][y - 1] == 0):
+        dfs(x, y - 1, visited, list, size)
 
 # init the game
 def mine(n, bombs):
@@ -213,47 +214,58 @@ def game(size, bombs,position):
             lst[i//40] += [Square(i, j, 40, 40, MyBoard.board, (i // 40, j // 40))]
             screen.blit(unclicked, (i, j))
 
+    print position, '\n'
+    run = True
+    flag_run = True
+    count = 0
 
-
-    for newPosition in position:
-        # pause 1 s
-        time.sleep(1)
-         # use position to uncover block
-        for i in lst:
-            for j in i:
-                r = pygame.rect.Rect(newPosition, (1, 1))
-                if j.rect.colliderect(r):
-                    if j.flag == False:
-                        if j.val == 9: #there is bomb
-                            print("game over")
-                        j.visible = True
-                        if j.val == 0:
-                            j.visible = open_game(lst, j)
+    while run:
+        for newPosition in position:
+            time.sleep(1)
+            count += 1
+            print count
+            if flag_run == False:
+                break
+            for i in lst:
+                for j in i:
+                    if flag_run == False:
+                        break
+                    p = lst[newPosition[0]][newPosition[1]]
+                    r = pygame.rect.Rect((p.x, p.y), (1, 1))
+                    print(newPosition, j.x, j.y)
+                    if j.rect.colliderect(r):
+                        if j.flag == False:
+                            if j.val == 9: #there is bomb
+                                print j.val
+                                print("game over")
+                                run = False
+                                flag_run = False
                             j.visible = True
-
-
+                            if j.val == 0:
+                                j.visible = open_game(lst, j)
+                                j.visible = True
 
         # open every square that visible and check win
-        for i in lst:
-            for j in i:
-                if j.visible == True:
-                    screen.blit(unclicked, (j.x, j.y))
-                    screen.blit(numbers[j.val], (j.x + 10, j.y + 10))
-                if j.flag == True:
-                    screen.blit(flag, (j.x + 10, j.y + 10))
-                if j.flag == False and j.visible == False:
-                    screen.blit(clicked, (j.x, j.y))
+            for i in lst:
+                for j in i:
+                    if j.visible == True:
+                        screen.blit(unclicked, (j.x, j.y))
+                        screen.blit(numbers[j.val], (j.x + 10, j.y + 10))
+                    if j.flag == True:
+                        screen.blit(flag, (j.x + 10, j.y + 10))
+                    if j.flag == False and j.visible == False:
+                        screen.blit(clicked, (j.x, j.y))
 
-        count = 0
-        for i in lst:
-            for j in i:
-                if j.visible == True and j.val != 9:
-                  count += 1
+            count = 0
+            for i in lst:
+                for j in i:
+                    if j.visible == True and j.val != 9:
+                        count += 1
                 # count the visible square, if open all but not a bomb, win
-            if count == size * size - bombs:
-                run = False
-                print("You win")
-        pygame.display.update()
+                if count == size * size - bombs:
+                    run = False
+                    print("You win")
+            pygame.display.update()
 
     # won or lost, show all bombs
     for i in lst:
