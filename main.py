@@ -18,5 +18,5 @@ def make_visited(n):
 
 visited = make_visited(size)
 minesweeper.dfs(x_axis, y_axis, visited, list, size)
-print list,'\n'
+# print list, '\n'
 minesweeper.game(size, bombs, list)

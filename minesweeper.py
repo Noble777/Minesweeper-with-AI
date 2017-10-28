@@ -1,6 +1,7 @@
 from random import randint
 import pygame
 import time
+import player
 pygame.init()
 
 
@@ -11,7 +12,6 @@ def dfs(x, y, visited, list, size):
     if(x < size - 1 and visited[x + 1][y] == 0):
         dfs(x + 1, y, visited, list, size)
     if(y < size - 1 and visited[x][y + 1] == 0):
-
         dfs(x, y + 1, visited, list, size)
     if (x > 0 and visited[x - 1][y] == 0):
         dfs(x - 1, y, visited, list, size)
@@ -22,7 +22,9 @@ def dfs(x, y, visited, list, size):
 def mine(n, bombs):
     table = makeTable(n)
     table = add_bombs(table, bombs)
+
     table = change_table(table)
+    pr(table)
     return table
 
 # make a table matrix
@@ -87,12 +89,12 @@ def check_up_left(table, x, y):
 
 def check_up_right(table, x, y):
     if x - 1 >= 0 and y + 1 < len(table):
-        if table[x -1][y + 1] != 9:
+        if table[x - 1][y + 1] != 9:
             table[x - 1][y + 1] += 1
     return table
 
 def check_up(table, x, y):
-    if y - 1 >= 0:
+    if x - 1 >= 0:
         if table[x - 1][y] != 9:
             table[x - 1][y] += 1
     return table
@@ -113,6 +115,18 @@ def pr(table):
     for i in table:
         print(i)
 
+def pri(lst):
+    length = lst.__len__()
+    tt = makeTable(length)
+    for i in range(length):
+        for j in range(length):
+            p = lst[i][j]
+            if (p.visible == True):
+                tt[j][i] = p.val
+            else:
+                tt[j][i] = -1
+    return tt
+
 #the whole board
 class Board:
     def __init__(self, board):
@@ -131,6 +145,8 @@ class Square:
         self.y = y
         self.visible = False
         self.flag = False
+    def __len__(self):
+        return len(self.numbers)
 
 def restart(size, bombs):
     game(size, bombs)
@@ -140,9 +156,9 @@ def open_game(lst, square):
     i = square.x // 40
     j = square.y // 40
     if i + 1 < len(lst):
-        # we check one cube around the current cube if it is in the table
+        # we check one cube arround the current cube if it is in the table
         # if it is and it is not visible and unflagged, open it and than, if it is
-        # zero open everything around it again and again
+        # zero open everything arround it again and again
         if lst[i + 1][j].visible == False and lst[i + 1][j].flag == False:
             lst[i + 1][j].visible = True
             if lst[i + 1][j].val == 0:
@@ -173,7 +189,7 @@ def open_game(lst, square):
                 if lst[i - 1][j - 1].val == 0:
                     open_game(lst, lst[i - 1][j - 1])
     if j - 1 >= 0:
-        if lst[i][j - 1].visible == False and lst[i][j - 1].flag == False:
+        if lst[i][j - 1].visible == False and lst[i][j -1].flag == False:
             lst[i][j - 1].visible = True
             if lst[i][j - 1].val == 0:
                 open_game(lst, lst[i][j - 1])
@@ -182,6 +198,7 @@ def open_game(lst, square):
             lst[i][j + 1].visible = True
             if lst[i][j + 1].val == 0:
                 open_game(lst, lst[i][j + 1])
+
 
 #position from dfs
 def game(size, bombs,position):
@@ -214,36 +231,37 @@ def game(size, bombs,position):
             lst[i//40] += [Square(i, j, 40, 40, MyBoard.board, (i // 40, j // 40))]
             screen.blit(unclicked, (i, j))
 
-    print position, '\n'
+    #print position, '\n'
     run = True
     flag_run = True
-    count = 0
+    counting = 0
 
     while run:
-        for newPosition in position:
-            time.sleep(1)
-            count += 1
-            print count
-            if flag_run == False:
-                break
-            for i in lst:
-                for j in i:
-                    if flag_run == False:
-                        break
-                    p = lst[newPosition[0]][newPosition[1]]
-                    r = pygame.rect.Rect((p.x, p.y), (1, 1))
-                    print(newPosition, j.x, j.y)
-                    if j.rect.colliderect(r):
-                        if j.flag == False:
-                            if j.val == 9: #there is bomb
-                                print j.val
-                                print("game over")
-                                run = False
-                                flag_run = False
+        matrix = pri(lst)
+        newPosition = player.play(position, matrix)
+        run = checkWin(matrix)
+        time.sleep(1)
+        counting += 1
+        print counting
+        print(newPosition)
+        for i in lst:
+            for j in i:
+                if flag_run == False:
+                    break
+                p = lst[newPosition[0]][newPosition[1]]
+                r = pygame.rect.Rect((p.x, p.y), (1, 1))
+                #print(p.val)
+                if j.rect.colliderect(r):
+                    if j.flag == False:
+                        if j.val == 9: #there is bomb
+                            # print j.val
+                            print("game over")
+                            run = False
+                            flag_run = False
+                        j.visible = True
+                        if j.val == 0:
+                            j.visible = open_game(lst, j)
                             j.visible = True
-                            if j.val == 0:
-                                j.visible = open_game(lst, j)
-                                j.visible = True
 
         # open every square that visible and check win
             for i in lst:
@@ -275,14 +293,21 @@ def game(size, bombs,position):
     pygame.display.update()
 
     # wait for quit or rest
-    run = True
-    while run:
+    running = True
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:  # if quit the game, close the program
-                run = False
+                running = False
                 pygame.quit()
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
-                    run = False
+                    running = False
                     restart(size, bombs)  # if the user press 'r' to restart
+
+def checkWin(matrix):
+    for i in range(len(matrix[0])):
+        for j in range(len(matrix[0])):
+            if (matrix[i][j] == -1):
+                return False
+    return True
