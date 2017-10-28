@@ -3,9 +3,10 @@ import minesweeper
 
 print("Starting game")
 print("press 'r' for restart")
-size = int(input("Please enter the size of matrix: "))
-bombs = int(input("Please enter the number of bombs: "))
-
+# size = int(input("Please enter the size of matrix: "))
+# bombs = int(input("Please enter the number of bombs: "))
+size = 10
+bombs = 9
 # search
 x_axis = 0
 y_axis = 0

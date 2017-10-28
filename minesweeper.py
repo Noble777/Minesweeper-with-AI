@@ -5,7 +5,6 @@ import player
 pygame.init()
 
 
-
 def dfs(x, y, visited, list, size):
     list.append((x, y))
     visited[x][y] = 1
@@ -22,7 +21,6 @@ def dfs(x, y, visited, list, size):
 def mine(n, bombs):
     table = makeTable(n)
     table = add_bombs(table, bombs)
-
     table = change_table(table)
     pr(table)
     return table
@@ -235,14 +233,16 @@ def game(size, bombs,position):
     run = True
     flag_run = True
     counting = 0
-
+    pathnumber = -1
     while run:
         matrix = pri(lst)
-        newPosition = player.play(position, matrix)
+        pathnumber += 1
+        newPosition, position = player.playcsp(position, matrix, pathnumber)
         run = checkWin(matrix)
+        # pr(matrix)
         time.sleep(1)
         counting += 1
-        print counting
+        #print counting
         print(newPosition)
         for i in lst:
             for j in i:
@@ -292,22 +292,10 @@ def game(size, bombs,position):
                 screen.blit(nine, (j.x + 10, j.y + 10))
     pygame.display.update()
 
-    # wait for quit or rest
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:  # if quit the game, close the program
-                running = False
-                pygame.quit()
-
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
-                    running = False
-                    restart(size, bombs)  # if the user press 'r' to restart
-
+# check whether matrix have a square which is unvisible
 def checkWin(matrix):
     for i in range(len(matrix[0])):
         for j in range(len(matrix[0])):
             if (matrix[i][j] == -1):
-                return False
-    return True
+                return True
+    return False
