@@ -25,7 +25,7 @@ def mine(n, bombs):
     table = add_bombs(table, bombs)
     table = change_table(table)
     # table = [[3, 9, 2, 0], [9, 9, 2, 0], [2, 2, 1, 0], [0, 0, 0, 0]]
-    #pr(table)
+    pr(table)
     return table
 
 # make a table matrix
@@ -138,8 +138,6 @@ def prx(lst, matrix):
                 tt[j][i] = p.val
             elif (p.visible == False and matrix[i][j] == 9):
                 tt[j][i] = 9
-                # if p.flag == False:
-                #     p.flag = True
             else:
                 tt[j][i] = -1
     # print "prx result"
@@ -283,7 +281,7 @@ def game(size, bombs, position):
         # matrix = pri(lst)
         newPosition, position, matrix = player.playcsp(position, matrix, pathnumber)
         run = checkWin(matrix)
-        #time.sleep(1)
+        time.sleep(1)
         counting += 1
         #print counting
         #print(newPosition)
@@ -353,8 +351,8 @@ def checkWin(matrix):
                 return True
     return False
 
-size = 10
-bombs = 17
+size = 8
+bombs = 4
 # search
 x_axis = 0
 y_axis = 0
@@ -370,7 +368,7 @@ dfs(x_axis, y_axis, visited, list, size)
 # print list, '\n'
 
 count = 0
-for i in range(100):
+for i in range(5):
     oldlist = copy.deepcopy(list)
     result = game(size, bombs, oldlist)
     if (result == "You win"):

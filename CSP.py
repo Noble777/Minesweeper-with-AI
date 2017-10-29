@@ -1,5 +1,7 @@
 import numpy as N
 
+
+
 def matrix_expand(row_0, column_0, mat_0):
     mat_1 = N.zeros((row_0 + 2, column_0 + 2), dtype=int)
     for i in range(0, row_0):
@@ -34,7 +36,7 @@ def method_1(row_0, column_0, mat_0, mat_1):
             if mat_1[i + 1][j + 1] == 0 and list_temp.count(-1) != 0:
                 # print(i, j)
                 if mat_0[i][j] - list_temp.count(1) == list_temp.count(-1):
-                    # print(i, j)
+                    #print(i, j)
                     if mat_1[i][j] == -1:
                         list_mine.append((i - 1, j - 1))
                     if mat_1[i + 1][j] == -1:
@@ -112,13 +114,15 @@ def csp(mat_0):
     return new_mine, new_nomine
 
 
-# mat_0 = [[-1, 2, 1, 0], [3, 9, 1, 0], [9, 3, 2, 1], [-1, 2, 9, 1]]
-# # mat_0 = [[-1, 2, 1, 0], [3, 9, 1, 0], [9, 3, 2, 1], [1, 2, 9, 1]]
-# # mat_0 = [[-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, 1]]
-# a,b = csp(mat_0)
-# print a
-# print b
 
+
+# # mat_0 = [[9, -1, -1, 1, 9], [-1, 1, -1, 2, 2], [-1, -1, -1, 9, 1], [1, 2, 3, 3, 2], [1, -1, -1, 2, 9]]
+# # mat_0 = [[-1, 2, 1, 0], [3, 9, 1, 0], [9, 3, 2, 1], [-1, 2, 9, 1]]
+# # mat_0 = [[-1, 2, 1, 0], [3, 9, 1, 0], [9, 3, 2, 1], [1, 2, 9, 1]]
+mat_0 = [[3, 9, 2, -1], [9, 9, -1, -1], [-1, -1, -1, -1], [-1, -1, -1, -1]]
+a, b = csp(mat_0)
+print a
+print b
 
 
 

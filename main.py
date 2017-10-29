@@ -1,12 +1,11 @@
 import minesweeper
 
-
 print("Starting game")
-print("press 'r' for restart")
+print("If you want to restart the game, press 'r' ")
 # size = int(input("Please enter the size of matrix: "))
 # bombs = int(input("Please enter the number of bombs: "))
-size = 10
-bombs = 9
+size = 8
+bombs = 4
 # search
 x_axis = 0
 y_axis = 0
@@ -20,4 +19,6 @@ def make_visited(n):
 visited = make_visited(size)
 minesweeper.dfs(x_axis, y_axis, visited, list, size)
 # print list, '\n'
-minesweeper.game(size, bombs, list)
+
+result = minesweeper.game(size, bombs, list)
+# print result
