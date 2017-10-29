@@ -281,7 +281,7 @@ def game(size, bombs, position):
         pathnumber += 1
         #prt(matrix)
         # matrix = pri(lst)
-        newPosition, position, matrix = player.playcsp(position, matrix, pathnumber)
+        newPosition, position, matrix = player.playlogic(position, matrix, pathnumber)
         run = checkWin(matrix)
         #time.sleep(1)
         counting += 1
@@ -354,7 +354,7 @@ def checkWin(matrix):
     return False
 
 size = 10
-bombs = 17
+bombs = 1
 # search
 x_axis = 0
 y_axis = 0

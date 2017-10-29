@@ -1,5 +1,5 @@
 import CSP
-
+import logic
 # player use csp helper
 def playcsp(listofPos, matrix, count):
     # print count
@@ -51,7 +51,7 @@ def playcsp(listofPos, matrix, count):
 def playlogic(listofPos, matrix, count):
     # print count
     # do the csp first
-    mine, nomine = logic(matrix)
+    mine, nomine = logic.solver(listofPos, matrix, count)
     # print mine
     # print nomine
     # print listofPos
